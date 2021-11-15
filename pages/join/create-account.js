@@ -58,6 +58,7 @@ export default function Join() {
                     required: true,
                     message: "Please input your password!",
                   },
+                  { min: 8, message: "Password must be minimum 8 characters." },
                 ]}
                 hasFeedback
               >

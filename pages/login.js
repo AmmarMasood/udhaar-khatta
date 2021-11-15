@@ -58,9 +58,12 @@ export default function Login() {
                   <Checkbox>Remember me</Checkbox>
                 </Form.Item>
 
-                <a className={styles.forgot} href="">
-                  Forgot password
-                </a>
+                <Link
+                  className={styles.forgot}
+                  href="/reset-password/send-link"
+                >
+                  Forgot Password
+                </Link>
               </Form.Item>
 
               <Form.Item>
