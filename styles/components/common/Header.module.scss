@@ -1,0 +1,61 @@
+@import "../../_mixins.scss";
+@import "../../_variables.scss";
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  color: #333;
+  height: 60px;
+  padding: 0 30px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  ul {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    list-style: none;
+
+    li {
+      margin-right: 10px;
+      margin-top: 10px;
+    }
+  }
+}
+
+.logo {
+  color: $color-primary-dark;
+  font-size: 26px;
+  text-transform: uppercase;
+  font-weight: 900;
+  a {
+    color: $color-primary-dark;
+
+    &:hover {
+      color: $color-primary-light;
+    }
+  }
+}
+
+@include respond(tab-port) {
+  .header {
+    flex-direction: column;
+    height: auto;
+    border: 1px solid red;
+  }
+
+  .header ul {
+    margin: 20px 0;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .header a {
+    margin-right: 0;
+  }
+
+  .logo {
+    margin: 20px 0;
+  }
+}

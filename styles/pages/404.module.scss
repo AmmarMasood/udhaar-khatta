@@ -1,0 +1,13 @@
+@import "../_mixins.scss";
+@import "../_variables.scss";
+
+.error {
+  text-align: center;
+  margin: 100px 0 200px;
+
+  h2 {
+    font-size: 20px;
+    color: $color-dark-gray;
+    text-transform: capitalize;
+  }
+}

@@ -2,7 +2,7 @@ import React from "react";
 import Head from "next/head";
 import Header from "./Header";
 import Footer from "./Footer";
-import styles from "@/styles/components/Layout.module.scss";
+import styles from "@/styles/components/common/Layout.module.scss";
 import { useRouter } from "next/router";
 
 function Layout({ title, keywords, description, childern }) {
@@ -24,8 +24,9 @@ function Layout({ title, keywords, description, childern }) {
 }
 
 Layout.defaultProps = {
-  title: "Udhaar Khatta | Pakistan's No 1 Udhaar App",
-  keywords: "udhaar debt money pakistan khatta",
-  description: "Udhaar Khatta is your digital Khatabook, Cashbook, SalaryBook, Invoice Maker, and Inventory (Stock) manager. Udhaar Khatta is the only app you need to run and grow your business.",
+  title: "Udhaar Khata | Pakistan's No 1 Udhaar App",
+  keywords: "udhaar debt money pakistan khata",
+  description:
+    "Udhaar Khata is your digital Khatabook, Cashbook, SalaryBook, Invoice Maker, and Inventory (Stock) manager. Udhaar Khata is the only app you need to run and grow your business.",
 };
 export default Layout;

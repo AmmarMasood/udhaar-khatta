@@ -1,16 +1,36 @@
-html,
-body {
-  padding: 0;
+@import "./_mixins.scss";
+@import "./_variables.scss";
+
+*,
+*::after,
+*::before {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  padding: 0;
+  box-sizing: inherit;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+html {
+  font-size: 62.5%;
+
+  @include respond(tab-land) {
+    font-size: 56.25% !important; //or 9px 9/16 = 56.25%
+  }
+
+  @include respond(tab-port) {
+    // font-size: 50%; // or 8px 8/16 = 50%
+    font-size: 50% !important;
+  }
+
+  @include respond(phone) {
+    font-size: 43.75% !important; // or 7px 7/16 = 43.75%
+  }
+
+  @include respond(big-desktop) {
+    font-size: 75%; //1rem = 12px or 12/16
+  }
 }
 
-* {
-  box-sizing: border-box;
+::selection {
+  background-color: $color-primary-light;
+  color: $color-white;
 }

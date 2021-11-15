@@ -1,0 +1,32 @@
+@import "../_mixins.scss";
+@import "../_variables.scss";
+
+.container {
+  display: flex;
+  height: 80vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.loginForm {
+  min-width: 500px;
+  h1 {
+    font-size: 30px;
+    text-transform: uppercase;
+    color: $color-dark-gray;
+    font-weight: 600;
+  }
+}
+
+.imageContainer {
+  min-width: 500px;
+  margin-left: 50px;
+}
+
+.button {
+  margin-right: 10px;
+}
+
+.forgot {
+  float: right;
+}

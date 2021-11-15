@@ -1,0 +1,27 @@
+@import "../../_mixins.scss";
+@import "../../_variables.scss";
+
+.container {
+  //   border: 1px solid red;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  align-items: center;
+  justify-content: space-between;
+
+  .textContainer {
+    h1 {
+      color: $color-dark-gray;
+      font-size: 30px;
+      font-weight: 700;
+    }
+    p {
+      font-size: 20px;
+      line-height: 30px;
+      font-size: $default-font-size;
+    }
+  }
+  .imageContainer {
+    margin-left: 20px;
+  }
+}
