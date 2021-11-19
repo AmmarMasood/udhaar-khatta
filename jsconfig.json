@@ -11,6 +11,8 @@
             "@/config/*": [
                 "config/*"
             ],
+            "@/context/*": ["context/*"],
+            "@/helpers/*": ["helpers/*"],
         }
     }
 }

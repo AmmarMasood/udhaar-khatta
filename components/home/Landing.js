@@ -7,7 +7,7 @@ function Landing() {
   return (
     <div className={styles.container}>
       <h1>Welcome to Udhaar Khata App</h1>
-      <Link href="/workspace">
+      <Link href="/workspace/my-khata">
         <Button className={styles.btn} type="primary">
           Continue to my workspace
         </Button>

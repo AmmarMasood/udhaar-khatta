@@ -1,0 +1,27 @@
+.mainContainer {
+  height: 100vh;
+}
+.floatingButton {
+  background-color: #4ac600;
+  color: #fff;
+  margin: 20px 0px 10px 15px;
+  border: none;
+  &:hover {
+    background-color: #5be40d;
+    color: #fff;
+    border: none;
+  }
+}
+.newInviteButton {
+  margin: 0px 0px 20px 5px;
+}
+.userInfoContainer {
+  text-align: center;
+  margin: 20px 0 10px 0;
+
+  p {
+    margin-top: 16px;
+    font-size: 18px;
+    font-weight: 900;
+  }
+}

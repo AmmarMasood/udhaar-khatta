@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import Layout from "@/components/common/Layout";
 import styles from "@/styles/pages/Join.module.scss";
-import { Form, Input, Button, Checkbox, Tooltip } from "antd";
+import { AuthContext } from "@/context/AuthContext";
+import { Form, Input, Button, Checkbox, Tooltip, Spin } from "antd";
 import {
   UserOutlined,
   LockOutlined,
@@ -10,12 +11,22 @@ import {
 } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
+import { openNotificationWithIcon } from "@/helpers/notifications";
 
 export default function Join() {
   const [withOrganization, setWithOrganization] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+  const { register, error } = useContext(AuthContext);
+
+  // useEffect(
+  //   () => error && openNotificationWithIcon("error", error, ""),
+  //   [error]
+  // );
+
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
+    register(values, setLoading);
   };
 
   return (
@@ -98,7 +109,7 @@ export default function Join() {
 
               {withOrganization && (
                 <Form.Item
-                  name="email"
+                  name="organizationName"
                   label={
                     <Tooltip
                       placement="right"
@@ -147,16 +158,19 @@ export default function Join() {
                 </Checkbox>
               </Form.Item>
               <Form.Item>
-                <Link href="/join/complete-profile/1234123123">
+                {loading ? (
+                  <Spin />
+                ) : (
                   <Button type="primary" htmlType="submit">
                     Register
                   </Button>
-                </Link>
+                )}
               </Form.Item>
             </Form>
           </div>
           <div className={styles.imageContainer}>
             <Image
+              alt=""
               className={styles.image}
               src={"/images/undraw_outer_space_re_u9vd.svg"}
               height={500}

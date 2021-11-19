@@ -1,14 +1,26 @@
+import { useEffect, useContext, useState } from "react";
 import Layout from "@/components/common/Layout";
 import styles from "@/styles/pages/Login.module.scss";
-import { Form, Input, Button, Checkbox } from "antd";
+import { AuthContext } from "@/context/AuthContext";
+import { openNotificationWithIcon } from "@/helpers/notifications";
+import { Form, Input, Button, Checkbox, Spin } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Login() {
+  const [loading, setLoading] = useState(false);
+  const { login, error } = useContext(AuthContext);
+
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
+    login({ email: values.email, password: values.password }, setLoading);
   };
+
+  useEffect(
+    () => error && openNotificationWithIcon("error", error, ""),
+    [error]
+  );
 
   return (
     <Layout
@@ -67,19 +79,24 @@ export default function Login() {
               </Form.Item>
 
               <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  className={styles.button}
-                >
-                  Log in
-                </Button>
+                {loading ? (
+                  <Spin />
+                ) : (
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className={styles.button}
+                  >
+                    Log in
+                  </Button>
+                )}
                 Or <Link href="/join/create-account">register now!</Link>
               </Form.Item>
             </Form>
           </div>
           <div className={styles.imageContainer}>
             <Image
+              alt="image"
               className={styles.image}
               src={"/images/undraw_online_payments_re_y8f2.svg"}
               height={500}

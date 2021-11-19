@@ -1,0 +1,14 @@
+.mainContainer {
+  height: 100vh;
+}
+.floatingButton {
+  background-color: #4ac600;
+  color: #fff;
+  margin: 20px 0px 20px 15px;
+  border: none;
+  &:hover {
+    background-color: #5be40d;
+    color: #fff;
+    border: none;
+  }
+}

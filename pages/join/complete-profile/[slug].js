@@ -1,8 +1,10 @@
+import { useEffect, useContext, useState } from "react";
+
 import Layout from "@/components/common/Layout";
 import styles from "@/styles/pages/Join.module.scss";
-import { Form, Input, Button, Cascader, Select } from "antd";
+import { Form, Input, Button, Cascader, Select, Spin } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
-import Image from "next/image";
+import { AuthContext } from "@/context/AuthContext";
 
 const residences = [
   {
@@ -21,8 +23,12 @@ const residences = [
 
 export default function CompleteProfile({ slug }) {
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const { completeProfile, error } = useContext(AuthContext);
+
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
+    completeProfile(values, setLoading);
   };
 
   return (
@@ -35,35 +41,45 @@ export default function CompleteProfile({ slug }) {
           onFinish={onFinish}
           scrollToFirstError
         >
-          {console.log(slug)}
           <div className={styles.container}>
             <div className={styles.leftContainer}>
               <h1>Complete Profile</h1>
               <Form.Item
-                name="email"
-                label="E-mail"
-                rules={[
-                  {
-                    type: "email",
-                    message: "The input is not valid E-mail!",
-                  },
-                  {
-                    required: true,
-                    message: "Please input your E-mail!",
-                  },
-                ]}
-              >
-                <Input value={slug} />
-              </Form.Item>
-
-              <Form.Item
-                name="firstname"
+                name="firstName"
                 label="Firstname"
                 rules={[
                   { required: true, message: "Please input your firstname!" },
                 ]}
               >
                 <Input />
+              </Form.Item>
+              <Form.Item
+                name="lastName"
+                label="Lastname"
+                rules={[
+                  { required: true, message: "Please input your lastname!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item name="intro" label="Intro">
+                <Input.TextArea showCount maxLength={100} />
+              </Form.Item>
+            </div>
+
+            <div className={styles.rightContainer}>
+              <Form.Item
+                name="phoneNumber"
+                label="Phone Number"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your phone number!",
+                  },
+                ]}
+              >
+                <Input addonBefore={"+92"} style={{ width: "100%" }} />
               </Form.Item>
 
               <Form.Item
@@ -77,38 +93,8 @@ export default function CompleteProfile({ slug }) {
                   <Select.Option value="other">Other</Select.Option>
                 </Select>
               </Form.Item>
-
-              <Form.Item name="intro" label="Intro">
-                <Input.TextArea showCount maxLength={100} />
-              </Form.Item>
-            </div>
-
-            <div className={styles.rightContainer}>
               <Form.Item
-                name="phone"
-                label="Phone Number"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your phone number!",
-                  },
-                ]}
-              >
-                <Input addonBefore={"+92"} style={{ width: "100%" }} />
-              </Form.Item>
-
-              <Form.Item
-                name="lastname"
-                label="Lastname"
-                rules={[
-                  { required: true, message: "Please input your lastname!" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-
-              <Form.Item
-                name="residence"
+                name="habitualResidence"
                 label="Habitual Residence"
                 rules={[
                   {
@@ -122,14 +108,18 @@ export default function CompleteProfile({ slug }) {
               </Form.Item>
 
               <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  className={styles.button}
-                >
-                  Submit
-                  <ArrowRightOutlined />
-                </Button>
+                {loading ? (
+                  <Spin />
+                ) : (
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className={styles.button}
+                  >
+                    Submit
+                    <ArrowRightOutlined />
+                  </Button>
+                )}
               </Form.Item>
             </div>
           </div>
