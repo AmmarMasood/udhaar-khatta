@@ -17,10 +17,7 @@ export default function Login() {
     login({ email: values.email, password: values.password }, setLoading);
   };
 
-  useEffect(
-    () => error && openNotificationWithIcon("error", error, ""),
-    [error]
-  );
+  useEffect(() => error && openNotificationWithIcon("error", error, ""));
 
   return (
     <Layout

@@ -19,10 +19,7 @@ export default function Join() {
   const [form] = Form.useForm();
   const { register, error } = useContext(AuthContext);
 
-  // useEffect(
-  //   () => error && openNotificationWithIcon("error", error, ""),
-  //   [error]
-  // );
+  useEffect(() => error && openNotificationWithIcon("error", error, ""));
 
   const onFinish = (values) => {
     console.log("Received values of form: ", values);

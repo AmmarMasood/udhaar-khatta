@@ -1,5 +1,5 @@
 import { useEffect, useContext, useState } from "react";
-
+import parseCookies from "@/helpers/cookieParser";
 import Layout from "@/components/common/Layout";
 import styles from "@/styles/pages/Join.module.scss";
 import { Form, Input, Button, Cascader, Select, Spin } from "antd";
@@ -21,14 +21,14 @@ const residences = [
   },
 ];
 
-export default function CompleteProfile({ slug }) {
+export default function CompleteProfile({ token }) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const { completeProfile, error } = useContext(AuthContext);
 
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
-    completeProfile(values, setLoading);
+    completeProfile(values, token, setLoading);
   };
 
   return (
@@ -41,6 +41,7 @@ export default function CompleteProfile({ slug }) {
           onFinish={onFinish}
           scrollToFirstError
         >
+          {console.log("token", token)}
           <div className={styles.container}>
             <div className={styles.leftContainer}>
               <h1>Complete Profile</h1>
@@ -129,12 +130,14 @@ export default function CompleteProfile({ slug }) {
   );
 }
 
-export async function getServerSideProps({ query: { slug } }) {
-  console.log("ammar", slug);
-
+export async function getServerSideProps({ params: { id }, req }) {
+  const { token } = parseCookies(req);
+  //   this is only available on server and not cliet!!!!
+  // how good is that fam?
+  console.log(token);
   return {
     props: {
-      slug: slug,
+      token: token,
     },
   };
 }

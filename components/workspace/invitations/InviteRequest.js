@@ -5,14 +5,14 @@ import { openNotificationWithIcon } from "@/helpers/notifications";
 import setAuthToken from "@/helpers/useAuthToken";
 import InviteRequestUserCard from "./InviteRequestUserCard";
 
-function InviteRequest({ visible, setVisible }) {
+function InviteRequest({ visible, setVisible, token }) {
   const [foundPerson, setFoundPerson] = useState(null);
 
   const onFinish = async (values) => {
-    setAuthToken(localStorage.getItem("jwt"));
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     if (values.email) {
       const res = await axios.get(
-        `${process.env.BACKEND_API}/friendship/find/user?email=${values.email}`
+        `${"http://localhost:5001"}/friendship/find/user?email=${values.email}`
       );
       if (res.data && res.data.email) {
         setFoundPerson(res.data);
@@ -68,6 +68,7 @@ function InviteRequest({ visible, setVisible }) {
         <InviteRequestUserCard
           id={foundPerson?.id}
           email={foundPerson?.email}
+          token={token}
         />
       ) : typeof foundPerson === "string" ? (
         <p>No person found with given email</p>

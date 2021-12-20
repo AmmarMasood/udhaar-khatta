@@ -14,78 +14,147 @@ export const AuthProvider = ({ children }) => {
 
   const router = useRouter();
 
-  useEffect(() => {
-    if (localStorage.getItem("jwt")) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-  });
+  // uncomment me
+  // useEffect(() => checkUserLoggedIn(), []);
+
+  // useEffect(() => {
+  //   if (localStorage.getItem("jwt")) {
+  //     setIsLoggedIn(true);
+  //   } else {
+  //     setIsLoggedIn(false);
+  //   }
+  // });
 
   // Register user
+  // const register = async (user, setLoading) => {
+  //   setLoading(true);
+  //   const res = await axios.post(
+  //     `${process.env.BACKEND_API}/auth/signup`,
+  //     user
+  //   );
+  //   if (res) {
+  //     router.push("/login");
+  //   }
+  //   setLoading(false);
+  // };
+
   const register = async (user, setLoading) => {
     setLoading(true);
-    const res = await axios.post(
-      `${process.env.BACKEND_API}/auth/signup`,
-      user
-    );
-    if (res) {
-      router.push("/login");
+    try {
+      console.log(
+        "here",
+        process.env.FRONTEND_API_URL,
+        process.env.BACKEND_API
+      );
+
+      const data = await axios.post(
+        `${"http://localhost:3006"}/api/register`,
+        user
+      );
+      if (data) {
+        router.push("/login");
+      }
+    } catch (err) {
+      setError(err.response.data.err);
+      setError(null);
     }
     setLoading(false);
   };
 
   // Login user
-  const login = async ({ email, password }, setLoading) => {
+  const login = async (vals, setLoading) => {
     setLoading(true);
-    const res = await axios.post(`${process.env.BACKEND_API}/auth/login`, {
-      email,
-      password,
-    });
-    if (res.data) {
+    try {
+      const res = await axios.post(`${"http://localhost:3006"}/api/login`, {
+        email: vals.email,
+        password: vals.password,
+      });
+
+      const { id, email, roles, profileCompleted } = res.data;
       console.log(res.data);
-      const { id, email, roles, accessToken, profileCompleted } = res.data;
-      localStorage.setItem("jwt", accessToken);
       setUser({ id, email, role: roles[0].name });
       if (profileCompleted) {
         router.push("/workspace/my-khata");
       } else {
         router.push(`/join/complete-profile/${id}`);
       }
+    } catch (error) {
+      if (error.response) {
+        // Request made and server responded
+        setError(
+          "Unable to login, todo: fix map the correct error from backend"
+        );
+        setError(null);
+      }
+      console.log(error);
     }
+
     setLoading(false);
   };
-  // complete profile
-  const completeProfile = async (values, setLoading) => {
+
+  // const login = async ({ email, password }, setLoading) => {
+  //   setLoading(true);
+  //   const res = await axios.post(`${process.env.BACKEND_API}/auth/login`, {
+  //     email,
+  //     password,
+  //   });
+  //   if (res.data) {
+  //     console.log(res.data);
+  //     const { id, email, roles, accessToken, profileCompleted } = res.data;
+  //     localStorage.setItem("jwt", accessToken);
+  //     setUser({ id, email, role: roles[0].name });
+  //     if (profileCompleted) {
+  //       router.push("/workspace/my-khata");
+  //     } else {
+  //       router.push(`/join/complete-profile/${id}`);
+  //     }
+  //   }
+  //   setLoading(false);
+  // };
+  // // complete profile
+  const completeProfile = async (values, token, setLoading) => {
     setLoading(true);
-    setAuthToken(localStorage.getItem("jwt"));
-    const res = await axios.put(
-      `${process.env.BACKEND_API}/user/profile/update`,
-      { ...values, habitualResidence: values.habitualResidence[0] }
-    );
-    if (res) {
-      router.push(`/workspace/my-khata`);
-      console.log("ammar", res.data);
+    if (token) {
+      try {
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        const res = await axios.put(
+          `${"http://localhost:5001"}/user/profile/update`,
+          { ...values, habitualResidence: values.habitualResidence[0] }
+        );
+        if (res) {
+          router.push(`/workspace/my-khata`);
+        }
+      } catch (err) {
+        console.log("mmm", err);
+      }
     }
-    console.log("ammar", res.data);
+
     setLoading(false);
   };
 
-  // Check if user is logged in
-  const getUserProfile = async (setLoading) => {
-    // setLoading(true);
-    setAuthToken(localStorage.getItem("jwt"));
-    const res = await axios.get(`${process.env.BACKEND_API}/user/profile`);
-    if (res) {
-      setUser(res.data);
+  const checkUserLoggedIn = async () => {
+    try {
+      const res = await axios(`${"http://localhost:3006"}/api/user`);
+      setUser(res.data.user);
+      console.log("here nigga", res);
+    } catch (err) {
+      setError("Error whille getting user profile");
+      setError(null);
+      logout();
+      console.log(err);
     }
-    // setLoading(false);
   };
 
-  const logout = () => {
-    localStorage.removeItem("jwt");
-    setUser(null);
-    router.push("/");
+  const logout = async () => {
+    // console.log("logout");
+    const res = await fetch(`${"http://localhost:3006"}/api/logout`, {
+      method: "POST",
+    });
+
+    if (res) {
+      setUser(null);
+      router.push("/login");
+    }
   };
 
   return (
@@ -93,12 +162,12 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         error,
-        getUserProfile,
+        // getUserProfile,
         register,
         completeProfile,
         login,
         logout,
-        isLoggedIn,
+        // isLoggedIn,
       }}
     >
       {" "}

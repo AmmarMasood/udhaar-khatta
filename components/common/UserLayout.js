@@ -7,12 +7,12 @@ import { Avatar, Button, Layout as AntdLayout, Menu, Spin } from "antd";
 import { UserOutlined, VideoCameraOutlined } from "@ant-design/icons";
 import { AuthContext, UserMenuContext } from "@/context/AuthContext";
 import InviteRequest from "../workspace/invitations/InviteRequest";
-import CreateRequest from "../workspace/CreateRequest";
+import CreateRequest from "../workspace/udhaars/CreateRequest";
 
 const { Content, Sider } = AntdLayout;
 
-function UserLayout({ title, keywords, description, childern }) {
-  const { profile, error, user, getUserProfile } = useContext(AuthContext);
+function UserLayout({ title, keywords, description, childern, token }) {
+  const { user } = useContext(AuthContext);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [menuNumber, setMenuNumber] = useContext(UserMenuContext);
@@ -22,18 +22,21 @@ function UserLayout({ title, keywords, description, childern }) {
   const [showNewRequestDrawer, setShowNewRequestDrawer] = useState(false);
 
   useEffect(() => {
-    // if (localStorage.getItem("jwt")) {
-    getUserProfile(setLoading);
-    // } else {
-    //   router.push("/");
-    // }
-  }, []);
-  useEffect(() => {
     if (menuNumber === "1") {
       router.push("/workspace/my-khata");
     }
+    if (menuNumber === "2") {
+      router.push("/workspace/my-khata/udhaars");
+    }
     if (menuNumber === "3") {
       router.push("/workspace/my-khata/invites");
+    }
+
+    if (menuNumber === "5") {
+      router.push("/workspace/expense-manager");
+    }
+    if (menuNumber === "6") {
+      router.push("/workspace/settings");
     }
   }, [menuNumber]);
 
@@ -53,12 +56,15 @@ function UserLayout({ title, keywords, description, childern }) {
       <div className={styles.removedMarginContainer}>
         {/* creating requests */}
         <InviteRequest
+          token={token}
           visible={showNewInviteRequestModal}
           setVisible={setShowNewInviteRequestModal}
         />
         <CreateRequest
           visible={showNewRequestDrawer}
           setVisible={setShowNewRequestDrawer}
+          token={token}
+          user={user}
         />
         <AntdLayout>
           <Sider
@@ -130,6 +136,13 @@ function UserLayout({ title, keywords, description, childern }) {
               </Menu.Item>
               <Menu.Item
                 key="5"
+                onClick={onOptionClick}
+                icon={<UserOutlined />}
+              >
+                Expense Manager
+              </Menu.Item>
+              <Menu.Item
+                key="6"
                 onClick={onOptionClick}
                 icon={<VideoCameraOutlined />}
               >

@@ -5,10 +5,11 @@ import UdhaarBookCard from "@/components/workspace/udhaarbook/UdhaarBookCard";
 import axios from "axios";
 import { Collapse } from "antd";
 import { AuthContext } from "@/context/AuthContext";
+import Main from "@/components/workspace/settings/Main";
 
 function Index({ token }) {
-  const [connections, setConnections] = useState([]);
-  const { user } = useContext(AuthContext);
+  //   const [connections, setConnections] = useState([]);
+  //   const { user } = useContext(AuthContext);
 
   // useEffect(() => {
   //   fetchData();
@@ -26,29 +27,7 @@ function Index({ token }) {
       <UserLayout
         // token={token}
         token="asdasdasdsadasdasdasdasdasdasd"
-        childern={
-          <div>
-            <h2>Udhaar Book</h2>
-            <Collapse
-              accordion
-              defaultActiveKey={["1"]}
-              onChange={(e) => console.log(e)}
-            >
-              {connections.map((c, i) => (
-                <Collapse.Panel
-                  header={
-                    c.firstParty?.id === user?.id
-                      ? c.secondParty?.firstName + " " + c.secondParty?.lastName
-                      : c.firstParty?.firstName + " " + c.firstParty?.lastName
-                  }
-                  key={c.id}
-                >
-                  <UdhaarBookCard connection={c} user={user} token={token} />
-                </Collapse.Panel>
-              ))}
-            </Collapse>
-          </div>
-        }
+        childern={<Main />}
       />
     </>
   );

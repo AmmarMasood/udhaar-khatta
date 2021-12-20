@@ -5,6 +5,8 @@ import UdhaarBookCard from "@/components/workspace/udhaarbook/UdhaarBookCard";
 import axios from "axios";
 import { Collapse } from "antd";
 import { AuthContext } from "@/context/AuthContext";
+import AdminLayout from "@/components/common/AdminLayout";
+import ManageUsers from "@/components/admin/ManageUsers";
 
 function Index({ token }) {
   const [connections, setConnections] = useState([]);
@@ -23,32 +25,10 @@ function Index({ token }) {
 
   return (
     <>
-      <UserLayout
+      <AdminLayout
         // token={token}
         token="asdasdasdsadasdasdasdasdasdasd"
-        childern={
-          <div>
-            <h2>Udhaar Book</h2>
-            <Collapse
-              accordion
-              defaultActiveKey={["1"]}
-              onChange={(e) => console.log(e)}
-            >
-              {connections.map((c, i) => (
-                <Collapse.Panel
-                  header={
-                    c.firstParty?.id === user?.id
-                      ? c.secondParty?.firstName + " " + c.secondParty?.lastName
-                      : c.firstParty?.firstName + " " + c.firstParty?.lastName
-                  }
-                  key={c.id}
-                >
-                  <UdhaarBookCard connection={c} user={user} token={token} />
-                </Collapse.Panel>
-              ))}
-            </Collapse>
-          </div>
-        }
+        childern={<ManageUsers />}
       />
     </>
   );

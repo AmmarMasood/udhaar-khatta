@@ -5,10 +5,9 @@ import Link from "next/link";
 import { Button, Popover } from "antd";
 
 export default function Header({ loggedIn, username }) {
-  const { user, isLoggedIn, logout } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   return (
     <header className={styles.header}>
-      {console.log("ammar", user)}
       <div className={styles.logo}>
         <Link href="/">
           <a>Udhaar Khata</a>
@@ -16,7 +15,7 @@ export default function Header({ loggedIn, username }) {
       </div>
       <nav>
         <ul>
-          {isLoggedIn ? (
+          {user ? (
             // <Popover placement="bottom" trigger="click" content={() => }>
             <Button onClick={() => logout()}>Log Out</Button>
           ) : (

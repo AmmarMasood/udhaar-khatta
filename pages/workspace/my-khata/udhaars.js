@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import UserLayout from "@/components/common/UserLayout";
-import InviteList from "@/components/workspace/invitations/InvitesList";
+// import InviteList from "@/components/workspace/invitations/InvitesList";
 import parseCookies from "@/helpers/cookieParser";
 import axios from "axios";
 export default function Index({ token }) {
@@ -10,12 +10,10 @@ export default function Index({ token }) {
   }, []);
 
   const fetchData = async () => {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    const res = await axios.get(
-      `${"http://localhost:5001"}/friendship/get/requests`
-    );
-    setInvites(res.data);
-    console.log("hello", res, res.data);
+    // axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    // const res = await axios.get(`${"http://localhost:5001"}/transaction`);
+    // setInvites(res.data);
+    // console.log("hello", res, res.data);
   };
 
   return (
@@ -23,7 +21,9 @@ export default function Index({ token }) {
       <UserLayout
         token={token}
         childern={
-          <InviteList invites={invites} fetchData={fetchData} token={token} />
+          <div>
+            <h2>All Udhaar Requests</h2>
+          </div>
         }
       />
     </>

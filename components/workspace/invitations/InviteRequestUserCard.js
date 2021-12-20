@@ -1,16 +1,15 @@
 import React from "react";
 import styles from "@/styles/components/workspace/invitations/InviteRequestUserCard.module.scss";
 import { Button, Card } from "antd";
-import setAuthToken from "@/helpers/useAuthToken";
 import axios from "axios";
 import { openNotificationWithIcon } from "@/helpers/notifications";
 
-function InviteRequestUserCard({ id, email }) {
+function InviteRequestUserCard({ id, email, token }) {
   const sendInvite = async () => {
-    setAuthToken(localStorage.getItem("jwt"));
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
     const res = await axios.post(
-      `${process.env.BACKEND_API}/friendship/send/request?friendId=${id}`
+      `${"http://localhost:5001"}/friendship/send/request?friendId=${id}`
     );
     if (res) {
       openNotificationWithIcon(
