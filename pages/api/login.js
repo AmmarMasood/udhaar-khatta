@@ -5,7 +5,7 @@ export default async (req, res) => {
   if (req.method === "POST") {
     try {
       const data = await axios.post(
-        `${"http://localhost:5001"}/auth/login`,
+        `${process.env.NEXT_PUBLIC_MAIN_BACKEND_API}/auth/login`,
         req.body
       );
       res.setHeader(

@@ -9,7 +9,7 @@ function InviteRequestUserCard({ id, email, token }) {
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
     const res = await axios.post(
-      `${"http://localhost:5001"}/friendship/send/request?friendId=${id}`
+      `${process.env.NEXT_PUBLIC_MAIN_BACKEND_API}/friendship/send/request?friendId=${id}`
     );
     if (res) {
       openNotificationWithIcon(

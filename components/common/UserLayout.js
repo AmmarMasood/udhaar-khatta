@@ -21,15 +21,15 @@ function UserLayout({ title, keywords, description, childern, token }) {
 
   const [showNewRequestDrawer, setShowNewRequestDrawer] = useState(false);
 
-  useEffect(() => {
+  function handleRouteChange(menuNumber) {
     if (menuNumber === "1") {
       router.push("/workspace/my-khata");
     }
-    if (menuNumber === "2") {
-      router.push("/workspace/my-khata/udhaars");
-    }
     if (menuNumber === "3") {
       router.push("/workspace/my-khata/invites");
+    }
+    if (menuNumber === "4") {
+      router.push("/workspace/my-khata/history");
     }
 
     if (menuNumber === "5") {
@@ -38,10 +38,11 @@ function UserLayout({ title, keywords, description, childern, token }) {
     if (menuNumber === "6") {
       router.push("/workspace/settings");
     }
-  }, [menuNumber]);
+  }
 
   const onOptionClick = (e) => {
     setMenuNumber(e.key);
+    handleRouteChange(e.key);
   };
 
   return (
@@ -82,11 +83,8 @@ function UserLayout({ title, keywords, description, childern, token }) {
               <div className={styles.userInfoContainer}>
                 {!loading ? (
                   <>
-                    <Avatar
-                      src={"https://placeimg.com/640/480/person"}
-                      size={100}
-                    />
-                    <p>{user?.email.split("@")[0]}</p>
+                    <Avatar src={user?.profileUrl} size={100} />
+                    <p>{user?.firstName}</p>
                   </>
                 ) : (
                   <Spin size="large" />
@@ -112,13 +110,6 @@ function UserLayout({ title, keywords, description, childern, token }) {
                 icon={<UserOutlined />}
               >
                 Udhaar Book
-              </Menu.Item>
-              <Menu.Item
-                key="2"
-                onClick={onOptionClick}
-                icon={<UserOutlined />}
-              >
-                Udhaar Requests
               </Menu.Item>
               <Menu.Item
                 key="3"

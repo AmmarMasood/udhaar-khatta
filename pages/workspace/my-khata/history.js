@@ -1,31 +1,27 @@
 import React, { useState, useEffect } from "react";
 import UserLayout from "@/components/common/UserLayout";
-// import InviteList from "@/components/workspace/invitations/InvitesList";
 import parseCookies from "@/helpers/cookieParser";
 import axios from "axios";
 export default function Index({ token }) {
-  const [invites, setInvites] = useState([]);
   useEffect(() => {
     fetchData();
   }, []);
 
-  const fetchData = async () => {
-    // axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    // const res = await axios.get(`${process.env.NEXT_PUBLIC_MAIN_BACKEND_API}/transaction`);
-    // setInvites(res.data);
-    // console.log("hello", res, res.data);
-  };
-
+  async function fetchData() {
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_MAIN_BACKEND_API}/transaction/self`
+      );
+      // setConnections(res.data);
+      console.log("hello jello", res, res.data);
+    } catch (err) {
+      console.log(Er);
+    }
+  }
   return (
     <>
-      <UserLayout
-        token={token}
-        childern={
-          <div>
-            <h2>All Udhaar Requests</h2>
-          </div>
-        }
-      />
+      <UserLayout token={token} childern={<h1>History</h1>} />
     </>
   );
 }

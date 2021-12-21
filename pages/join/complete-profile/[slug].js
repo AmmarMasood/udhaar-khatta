@@ -5,6 +5,7 @@ import styles from "@/styles/pages/Join.module.scss";
 import { Form, Input, Button, Cascader, Select, Spin } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { AuthContext } from "@/context/AuthContext";
+import AvatarUploader from "@/components/common/AvatarUploader";
 
 const residences = [
   {
@@ -25,6 +26,7 @@ export default function CompleteProfile({ token }) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const { completeProfile, error } = useContext(AuthContext);
+  const [myAvatar, setMyAvatar] = useState("");
 
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
@@ -45,6 +47,8 @@ export default function CompleteProfile({ token }) {
           <div className={styles.container}>
             <div className={styles.leftContainer}>
               <h1>Complete Profile</h1>
+              <span style={{ marginBottom: "10px" }}>Avatar</span>
+              <AvatarUploader avatar={myAvatar} setMyAvatar={setMyAvatar} />
               <Form.Item
                 name="firstName"
                 label="Firstname"

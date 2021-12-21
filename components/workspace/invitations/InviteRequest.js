@@ -12,7 +12,7 @@ function InviteRequest({ visible, setVisible, token }) {
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     if (values.email) {
       const res = await axios.get(
-        `${"http://localhost:5001"}/friendship/find/user?email=${values.email}`
+        `${process.env.NEXT_PUBLIC_MAIN_BACKEND_API}/friendship/find/user?email=${values.email}`
       );
       if (res.data && res.data.email) {
         setFoundPerson(res.data);

@@ -10,7 +10,7 @@ export default async (req, res) => {
     try {
       const { token } = cookie.parse(req.headers.cookie);
       const backendRes = await fetch(
-        `${"http://localhost:5001"}/user/profile`,
+        `${process.env.NEXT_PUBLIC_MAIN_BACKEND_API}/user/profile`,
         {
           method: "GET",
           headers: {

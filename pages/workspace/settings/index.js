@@ -8,26 +8,26 @@ import { AuthContext } from "@/context/AuthContext";
 import Main from "@/components/workspace/settings/Main";
 
 function Index({ token }) {
-  //   const [connections, setConnections] = useState([]);
-  //   const { user } = useContext(AuthContext);
+  const [connections, setConnections] = useState([]);
+  const { user } = useContext(AuthContext);
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    // fetchData();
+  }, []);
 
-  // const fetchData = async () => {
-  //   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  //   const res = await axios.get(`${"http://localhost:5001"}/friendship`);
-  //   setConnections(res.data);
-  //   console.log("hello jello", res, res.data);
-  // };
+  //   const fetchData = async () => {
+  //     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  //     const res = await axios.get(`${process.env.NEXT_PUBLIC_MAIN_BACKEND_API}/friendship`);
+  //     setConnections(res.data);
+  //     console.log("hello jello", res, res.data);
+  //   };
 
   return (
     <>
       <UserLayout
-        // token={token}
-        token="asdasdasdsadasdasdasdasdasdasd"
-        childern={<Main />}
+        token={token}
+        // token="asdasdasdsadasdasdasdasdasdasd"
+        childern={<Main token={token} />}
       />
     </>
   );
@@ -35,14 +35,14 @@ function Index({ token }) {
 
 export default Index;
 
-// export async function getServerSideProps({ req }) {
-//   const { token } = parseCookies(req);
-//   //   this is only available on server and not cliet!!!!
-//   // how good is that fam?
-//   console.log(token);
-//   return {
-//     props: {
-//       token: token,
-//     },
-//   };
-// }
+export async function getServerSideProps({ req }) {
+  const { token } = parseCookies(req);
+  //   this is only available on server and not cliet!!!!
+  // how good is that fam?
+  console.log(token);
+  return {
+    props: {
+      token: token,
+    },
+  };
+}

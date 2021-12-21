@@ -18,7 +18,9 @@ function CreateRequest({ visible, setVisible, token, user }) {
 
   const fetchData = async () => {
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    const res = await axios.get(`${"http://localhost:5001"}/friendship`);
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_MAIN_BACKEND_API}/friendship`
+    );
     setInvites(res.data);
     console.log("hello", res, res.data);
   };
@@ -29,7 +31,7 @@ function CreateRequest({ visible, setVisible, token, user }) {
       try {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         const res = await axios.post(
-          `${"http://localhost:5001"}/transaction/initiate`,
+          `${process.env.NEXT_PUBLIC_MAIN_BACKEND_API}/transaction/initiate`,
           { ...selectedPerson, amount: values.amount }
         );
         if (res) {

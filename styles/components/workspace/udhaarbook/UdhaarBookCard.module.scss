@@ -1,11 +1,20 @@
+.udhaarCardTopContainer {
+  // border: 2px solid red;
+  background-color: #fff;
+  height: 80vh;
+  padding: 10px;
+  border-radius: 10px;
+}
+
 .transactionHistoryContainer {
   // border: 2px solid red;
   background-color: #e87040;
-  max-height: 300px;
+  height: 90%;
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
   padding: 10px 20px;
+  border-radius: 10px;
 }
 
 .myTransactionCard {
@@ -16,8 +25,9 @@
   width: 500px;
   background-color: #fff;
   color: #e87040;
-  font-size: 18px;
+  font-size: 15px;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  align-self: flex-end;
 }
 
 .otherTransactionCard {
@@ -27,8 +37,8 @@
   padding: 10px;
   border-radius: 10px;
   width: 500px;
-  align-self: flex-end;
+
   background-color: #fff;
   color: #e87040;
-  font-size: 18px;
+  font-size: 15px;
 }

@@ -15,15 +15,7 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter();
 
   // uncomment me
-  // useEffect(() => checkUserLoggedIn(), []);
-
-  // useEffect(() => {
-  //   if (localStorage.getItem("jwt")) {
-  //     setIsLoggedIn(true);
-  //   } else {
-  //     setIsLoggedIn(false);
-  //   }
-  // });
+  useEffect(() => checkUserLoggedIn(), []);
 
   // Register user
   // const register = async (user, setLoading) => {
@@ -118,12 +110,32 @@ export const AuthProvider = ({ children }) => {
       try {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         const res = await axios.put(
-          `${"http://localhost:5001"}/user/profile/update`,
+          `${process.env.NEXT_PUBLIC_MAIN_BACKEND_API}/user/profile/update`,
           { ...values, habitualResidence: values.habitualResidence[0] }
         );
         if (res) {
           router.push(`/workspace/my-khata`);
         }
+      } catch (err) {
+        console.log("mmm", err);
+      }
+    }
+
+    setLoading(false);
+  };
+
+  const updateProfile = async (values, token, setLoading) => {
+    console.log("whiip");
+    setLoading(true);
+    if (token) {
+      console.log("helo");
+      try {
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        const res = await axios.put(
+          `${process.env.NEXT_PUBLIC_MAIN_BACKEND_API}/user/profile/update`,
+          { ...values }
+        );
+        console.log("completed");
       } catch (err) {
         console.log("mmm", err);
       }
@@ -141,6 +153,19 @@ export const AuthProvider = ({ children }) => {
       setError("Error whille getting user profile");
       setError(null);
       logout();
+      console.log(err);
+    }
+  };
+
+  const deleteMyAcount = async () => {
+    try {
+      const res = await axios(`${"http://localhost:3006"}/api/user`);
+      setUser(null);
+      logout();
+    } catch (err) {
+      setError("Error whille getting user profile");
+      setError(null);
+
       console.log(err);
     }
   };
@@ -167,6 +192,9 @@ export const AuthProvider = ({ children }) => {
         completeProfile,
         login,
         logout,
+        checkUserLoggedIn,
+        updateProfile,
+        deleteMyAcount,
         // isLoggedIn,
       }}
     >

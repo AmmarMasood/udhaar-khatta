@@ -2,99 +2,215 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "@/styles/components/workspace/udhaarbook/UdhaarBookCard.module.scss";
 import moment from "moment";
-import { Button } from "antd";
+import { Button, Avatar } from "antd";
+import { openNotificationWithIcon } from "@/helpers/notifications";
+import { LeftOutlined, UserOutlined } from "@ant-design/icons";
+import { useRouter } from "next/router";
+import ReloadButton from "@/components/common/ReloadButton";
+import ReportIssueModal from "./ReportIssueModal";
 
-function UdhaarBookCard({ connection, user, token }) {
+function UdhaarBookCard({ connectionId, user, token }) {
+  const router = useRouter();
   const [transactions, setTransactions] = useState([]);
-
+  const [loading, setLoading] = useState(false);
+  const [showReportIssueModal, setShowReportIssueModal] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState("");
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
-    console.log("connection", connection);
-    if (connection) {
-      try {
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const res = await axios.get(
-          `${"http://localhost:5001"}/transaction?friendshipId=${connection.id}`
+    setLoading(true);
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_MAIN_BACKEND_API}/transaction?friendshipId=${connectionId}`
+      );
+      res.data &&
+        setTransactions(
+          res.data.transactions.sort(function (a, b) {
+            // Turn your strings into dates, and then subtract them
+            // to get a value that is either negative, positive, or zero.
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          })
         );
-        res.data && setTransactions(res.data.transactions.reverse());
-        console.log("yoooooo", res.data);
-      } catch (err) {
-        console.log(err);
-      }
+      console.log("yoooooo", res.data);
+    } catch (err) {
+      console.log(err);
     }
+    setLoading(false);
   };
 
-  const handleUdhaarRequest = async (type) => {
-    if (type === "CANCEL") {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      const res = await axios.put(
-        `${"http://localhost:5001"}/transaction?transactionId=<transactionId>&transactionStatus=${type}`
-      );
+  const handleUdhaarRequest = async (type, id) => {
+    setLoading(true);
+    try {
+      if (type === "CANCELLED") {
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        const res = await axios.put(
+          `${process.env.NEXT_PUBLIC_MAIN_BACKEND_API}/transaction/cancel?transactionId=${id}`
+        );
+        if (res) {
+          openNotificationWithIcon(
+            "success",
+            `Successfully ${type} the request`
+          );
+          fetchData();
+        }
+        console.log(res);
+      } else {
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        const res = await axios.put(
+          `${process.env.NEXT_PUBLIC_MAIN_BACKEND_API}/transaction?transactionId=${id}&transactionStatus=${type}`
+        );
+        if (res) {
+          openNotificationWithIcon(
+            "success",
+            `Successfully ${type} the request`
+          );
+          fetchData();
+        }
+        console.log(res);
+      }
+    } catch (err) {
+      openNotificationWithIcon("error", `Error while ${type} the request`);
     }
-    if (type === "ACCEPT") {
-    }
-    if (type === "REJECT") {
-    }
+
+    setLoading(false);
   };
+
+  function onCompleteReport(values) {
+    console.log(values);
+  }
 
   return (
     <div>
-      {console.log(connection, transactions)}
-      <h1>Connection ID: {connection?.id}</h1>
-      <p>
-        Connection Name:{" "}
-        {connection.firstParty?.id === user?.id
-          ? connection.secondParty?.firstName +
-            " " +
-            connection.secondParty?.lastName
-          : connection.firstParty?.firstName +
-            " " +
-            connection.firstParty?.lastName}
-      </p>
-      <p>
-        Connection Email:{" "}
-        {connection.firstParty?.id === user?.id
-          ? connection.secondParty?.email
-          : connection.firstParty?.email}
-      </p>
-      <p>
-        Connection Residence:{" "}
-        {connection.firstParty?.id === user?.id
-          ? connection.secondParty?.habitualResidence
-          : connection.firstParty?.habitualResidence}
-      </p>
-      <div className={styles.transactionHistoryContainer}>
-        {transactions.map((t, i) => (
-          <div
-            key={i}
-            className={
-              user?.id === t.initiatedBy
-                ? styles.myTransactionCard
-                : styles.otherTransactionCard
-            }
-          >
-            <p>Amount: {t?.amount}</p>
-            <p>Created On: {moment(t?.createdAt).format("DD/MM/YYYY")}</p>
-            {user?.id === t.initiatedBy ? (
-              <Button onClick={() => handleUdhaarRequest("CANCEL")}>
-                Cancel
-              </Button>
-            ) : (
-              <div>
-                <Button onClick={() => handleUdhaarRequest("ACCEPT")}>
-                  Accept
-                </Button>
-                <Button onClick={() => handleUdhaarRequest("REJECT")}>
-                  Reject
+      <h1 style={{ fontSize: "30px", marginBottom: "20px" }}>
+        <LeftOutlined
+          onClick={() => router.back()}
+          style={{ marginRight: "10px", color: "#e87040", cursor: "pointer" }}
+        />
+      </h1>
+      <div className={styles.udhaarCardTopContainer}>
+        <ReloadButton loading={loading} onClick={() => fetchData()} />
+        {transactions.length > 0 ? (
+          <div className={styles.transactionHistoryContainer}>
+            {transactions.map((t, i) => (
+              <div
+                key={i}
+                className={
+                  user?.id === t.initiatedBy.id
+                    ? styles.myTransactionCard
+                    : styles.otherTransactionCard
+                }
+              >
+                <div>
+                  <Avatar
+                    size={64}
+                    src={t.initiatedBy.profileUrl}
+                    icon={<UserOutlined />}
+                  />
+                  <span style={{ marginLeft: "10px" }}>
+                    {t.initiatedBy.firstName + " " + t.initiatedBy.lastName}
+                  </span>
+                </div>
+                <div style={{ marginLeft: "75px", lineHeight: "10px" }}>
+                  <p style={{ marginBottom: "30px" }}>
+                    Request ID:
+                    <span>Rs. {t?.id}.</span>
+                  </p>
+                  <p>
+                    I want to get Udhaar of{" "}
+                    <span style={{ fontWeight: "600" }}>Rs. {t?.amount}.</span>
+                  </p>
+
+                  <p>
+                    {moment(t?.createdAt).format("MMMM Do YYYY, h:mm:ss a")}
+                  </p>
+                  <p style={{ marginTop: "20px" }}>
+                    {user?.id === t.initiatedBy.id
+                      ? t.transactionStatus === "PENDING"
+                        ? "Waiting for the conection to respond to this request."
+                        : t.transactionStatus === "ACCEPTED"
+                        ? "Request accpted by connection"
+                        : t.transactionStatus === "CANCELLED"
+                        ? "Request cancelled."
+                        : t.transactionStatus === "REJECTED"
+                        ? "Request rejected by connection"
+                        : ""
+                      : t.transactionStatus === "PENDING"
+                      ? "This request is pending for your response"
+                      : t.transactionStatus === "ACCEPTED"
+                      ? "You have accepted this request"
+                      : t.transactionStatus === "CANCELLED"
+                      ? "Request cancelled by conection"
+                      : t.transactionStatus === "REJECTED"
+                      ? "You have rejected the request"
+                      : ""}
+                  </p>
+                </div>
+                <div
+                  style={{
+                    float: "right",
+                    marginRight: "20px",
+                    marginTop: "20px",
+                  }}
+                >
+                  {t.transactionStatus === "PENDING" ? (
+                    user?.id === t.initiatedBy.id ? (
+                      <Button
+                        onClick={() => handleUdhaarRequest("CANCELLED", t.id)}
+                      >
+                        Cancel
+                      </Button>
+                    ) : (
+                      <div>
+                        <Button
+                          onClick={() => handleUdhaarRequest("REJECTED", t.id)}
+                        >
+                          Reject
+                        </Button>
+                        <Button
+                          onClick={() => handleUdhaarRequest("ACCEPTED", t.id)}
+                          style={{ marginLeft: "10px" }}
+                        >
+                          Accept
+                        </Button>
+                      </div>
+                    )
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <Button
+                  style={{
+                    marginLeft: "20px",
+                    marginTop: "20px",
+                  }}
+                  type="link"
+                  onClick={() => {
+                    setSelectedTransaction(t);
+                    setShowReportIssueModal(true);
+                  }}
+                >
+                  Report Issue?
                 </Button>
               </div>
-            )}
+            ))}
           </div>
-        ))}
+        ) : loading ? (
+          ""
+        ) : (
+          <h2 style={{ fontSize: "30px", textAlign: "center" }}>
+            No Transactions Found 😔{" "}
+          </h2>
+        )}{" "}
       </div>
+      <ReportIssueModal
+        show={showReportIssueModal}
+        selectedTransaction={selectedTransaction}
+        onShow={setShowReportIssueModal}
+        onCompleteReport={onCompleteReport}
+      />
     </div>
   );
 }

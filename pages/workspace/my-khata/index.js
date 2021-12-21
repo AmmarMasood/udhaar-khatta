@@ -5,48 +5,62 @@ import UdhaarBookCard from "@/components/workspace/udhaarbook/UdhaarBookCard";
 import axios from "axios";
 import { Collapse } from "antd";
 import { AuthContext } from "@/context/AuthContext";
+import { DoubleRightOutlined } from "@ant-design/icons";
+import styles from "@/styles/pages/Workspace.module.scss";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 function Index({ token }) {
+  const router = useRouter();
   const [connections, setConnections] = useState([]);
   const { user } = useContext(AuthContext);
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  // const fetchData = async () => {
-  //   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  //   const res = await axios.get(`${"http://localhost:5001"}/friendship`);
-  //   setConnections(res.data);
-  //   console.log("hello jello", res, res.data);
-  // };
+  const fetchData = async () => {
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_MAIN_BACKEND_API}/friendship`
+      );
+      setConnections(res.data);
+      console.log("hello jello", res, res.data);
+    } catch (err) {
+      console.log(Er);
+    }
+  };
 
   return (
     <>
       <UserLayout
-        // token={token}
-        token="asdasdasdsadasdasdasdasdasdasd"
+        token={token}
+        // token="asdasdasdsadasdasdasdasdasdasd"
         childern={
           <div>
-            <h2>Udhaar Book</h2>
-            <Collapse
-              accordion
-              defaultActiveKey={["1"]}
-              onChange={(e) => console.log(e)}
-            >
-              {connections.map((c, i) => (
-                <Collapse.Panel
-                  header={
-                    c.firstParty?.id === user?.id
+            <h1 style={{ fontSize: "30px", marginBottom: "20px" }}>
+              Udhaar Book
+            </h1>
+            <h3 style={{ marginBottom: "10px" }}>All Connections</h3>
+
+            {connections.map((c, i) => (
+              <Link key={c.id} href={`/workspace/my-khata/user/${c.id}`}>
+                <div className={styles.myKhattaIndexCard}>
+                  <span>
+                    {c.firstParty?.id === user?.id
                       ? c.secondParty?.firstName + " " + c.secondParty?.lastName
-                      : c.firstParty?.firstName + " " + c.firstParty?.lastName
-                  }
-                  key={c.id}
-                >
-                  <UdhaarBookCard connection={c} user={user} token={token} />
-                </Collapse.Panel>
-              ))}
-            </Collapse>
+                      : c.firstParty?.firstName + " " + c.firstParty?.lastName}
+                  </span>
+                  <span>Total Incoming Amount: {0}</span>
+                  <span>Total Outgoing Amount: {0}</span>
+                  <span>
+                    <DoubleRightOutlined />
+                  </span>
+                  {/* // <UdhaarBookCard connection={c} user={user} token={token} /> */}
+                </div>
+              </Link>
+            ))}
           </div>
         }
       />
@@ -56,14 +70,15 @@ function Index({ token }) {
 
 export default Index;
 
-// export async function getServerSideProps({ req }) {
-//   const { token } = parseCookies(req);
-//   //   this is only available on server and not cliet!!!!
-//   // how good is that fam?
-//   console.log(token);
-//   return {
-//     props: {
-//       token: token,
-//     },
-//   };
-// }
+export async function getServerSideProps({ req }) {
+  const { token } = parseCookies(req);
+  //   this is only available on server and not cliet!!!!
+  // how good is that fam?
+
+  console.log(token);
+  return {
+    props: {
+      token: token,
+    },
+  };
+}
